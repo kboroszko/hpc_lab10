@@ -15,7 +15,7 @@
 #define OPTION_VERBOSE "--verbose"
 
 
-__always_inline static void printUsage(char const* progName) {
+static void printUsage(char const* progName) {
     std::cerr << "Usage:" << std::endl <<
                     "    " << progName << " [--verbose] <N>" << std::endl <<
                     "Where:" << std::endl <<
@@ -23,17 +23,17 @@ __always_inline static void printUsage(char const* progName) {
                     "   " << OPTION_VERBOSE << "   Prints the input and output systems." << std::endl;
 }
 
-__always_inline static void freePointRow(const double* currentPointRow) {
+static void freePointRow(const double* currentPointRow) {
     if (currentPointRow != nullptr) {
         delete(currentPointRow);
     }
 }
 
-__always_inline static double* allocateCurrentPointRow(int numPointsPerDimension) {
+static double* allocateCurrentPointRow(int numPointsPerDimension) {
     return new double[numPointsPerDimension];
 }
 
-__always_inline static void freePoints(double** points, int numPointsPerDimension) {
+static void freePoints(double** points, int numPointsPerDimension) {
     if (points != nullptr) {
         for (int i = 0; i < numPointsPerDimension; ++i) {
             freePointRow(points[i]);
@@ -43,7 +43,7 @@ __always_inline static void freePoints(double** points, int numPointsPerDimensio
     }
 }
 
-__always_inline static double** allocatePoints(int numPointsPerDimension) {
+static double** allocatePoints(int numPointsPerDimension) {
     auto points = new double*[numPointsPerDimension];
 
     for (int i = 0; i < numPointsPerDimension; ++i) {
@@ -62,7 +62,7 @@ __always_inline static double** allocatePoints(int numPointsPerDimension) {
     return points;
 }
 
-__always_inline static void initializePoints(double **points, int numPointsPerDimension) {
+static void initializePoints(double **points, int numPointsPerDimension) {
     for (int i = 0; i < numPointsPerDimension; ++i) {
         for (int j = 0; j < numPointsPerDimension; ++j) {
             points[i][j] = Utils::getInitialValue(i, j, numPointsPerDimension);
@@ -70,7 +70,7 @@ __always_inline static void initializePoints(double **points, int numPointsPerDi
     }
 }
 
-__always_inline static void printPoints(double **points, int numPointsPerDimension) {
+static void printPoints(double **points, int numPointsPerDimension) {
     for (int i = 0; i < numPointsPerDimension; ++i) {
         std::cout << std::fixed << std::setprecision(10) << points[i][0];
 
@@ -82,7 +82,7 @@ __always_inline static void printPoints(double **points, int numPointsPerDimensi
     }
 }
 
-__always_inline static InputOptions parseInput(int argc, char * argv[]) {
+static InputOptions parseInput(int argc, char * argv[]) {
     int numPointsPerDimension = 0;
     bool verbose = false;
     int errorCode = 0;

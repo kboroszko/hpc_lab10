@@ -35,9 +35,11 @@ static double* allocateCurrentPointRow(int numPointsPerDimension) {
 
 static void freePoints(double** points, int numPointsPerDimension) {
     if (points != nullptr) {
+#pragma inline_enable /* enable inlining at all call sites here forward */
         for (int i = 0; i < numPointsPerDimension; ++i) {
             freePointRow(points[i]);
         }
+#pragma inline_disable /* disable inlining at all call sites here forward */
 
         delete(points);
     }

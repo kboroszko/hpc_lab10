@@ -52,234 +52,236 @@ Legend:
  35.                 
  36.                 static void freePoints(double** points, int numPointsPerDimension) {
  37.                     if (points != nullptr) {
- 38.     0---------<         for (int i = 0; i < numPointsPerDimension; ++i) {
- 39. +   0                       freePointRow(points[i]);
- 40.     0--------->         }
- 41.                 
- 42.                         delete(points);
- 43.                     }
- 44.                 }
- 45.                 
- 46.                 static double** allocatePoints(int numPointsPerDimension) {
- 47.                     auto points = new double*[numPointsPerDimension];
- 48.                 
- 49.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
- 50.     0                   points[i] = nullptr;
- 51.     0--------->     }
- 52.                 
- 53.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
- 54. +   0                   points[i] = allocateCurrentPointRow(numPointsPerDimension);
- 55.     0           
- 56.     0                   if (points[i] == nullptr) {
- 57. +   0                       freePoints(points, numPointsPerDimension);
- 58.     0                       return nullptr;
- 59.     0                   }
- 60.     0--------->     }
- 61.                 
- 62.                     return points;
- 63.                 }
- 64.                 
- 65.                 static void initializePoints(double **points, int numPointsPerDimension) {
- 66.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
- 67.     0 1-------<         for (int j = 0; j < numPointsPerDimension; ++j) {
- 68.     0 1                     points[i][j] = Utils::getInitialValue(i, j, numPointsPerDimension);
- 69.     0 1------->         }
- 70.     0--------->     }
- 71.                 }
- 72.                 
- 73.                 static void printPoints(double **points, int numPointsPerDimension) {
- 74.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
- 75. +   0                   std::cout << std::fixed << std::setprecision(10) << points[i][0];
- 76.     0           
- 77.     0 1-------<         for (int j = 1; j < numPointsPerDimension; ++j) {
- 78. +   0 1                     std::cout << " " << std::fixed << std::setprecision(10) << points[i][j];
- 79.     0 1------->         }
- 80.     0           
- 81.     0                   std::cout << std::endl;
- 82.     0--------->     }
- 83.                 }
- 84.                 
- 85.                 static InputOptions parseInput(int argc, char * argv[]) {
- 86.                     int numPointsPerDimension = 0;
- 87.                     bool verbose = false;
- 88.                     int errorCode = 0;
- 89.                 
- 90.                     if (argc < 2) {
- 91.                         std::cerr << "ERROR: Too few arguments!" << std::endl;
- 92. +                       printUsage(argv[0]);
- 93.                         errorCode = 1;
- 94.                     } else if (argc > 3) {
- 95.                         std::cerr << "ERROR: Too many arguments!" << std::endl;
- 96. +                       printUsage(argv[0]);
- 97.                         errorCode = 2;
- 98.                     } else {
- 99.                         int argIdx = 1;
-100.                 
-101.                         if (argc == 3) {
-102.                             if (strncmp(argv[argIdx], OPTION_VERBOSE, strlen(OPTION_VERBOSE)) != 0) {
-103.                                 std::cerr << "ERROR: Unexpected option '" << argv[argIdx] << "'!" << std::endl;
-104. +                               printUsage(argv[0]);
-105.                                 errorCode = 3;
-106.                             }
-107.                 
-108.                             verbose = true;
-109.                             ++argIdx;
-110.                         }
-111.                 
-112.                         numPointsPerDimension = std::strtol(argv[argIdx], nullptr, 10);
+ 38.                 #pragma inline_enable /* enable inlining at all call sites here forward */
+ 39.     0---------<         for (int i = 0; i < numPointsPerDimension; ++i) {
+ 40. +   0                       freePointRow(points[i]);
+ 41.     0--------->         }
+ 42.                 #pragma inline_disable /* disable inlining at all call sites here forward */
+ 43.                 
+ 44.                         delete(points);
+ 45.                     }
+ 46.                 }
+ 47.                 
+ 48.                 static double** allocatePoints(int numPointsPerDimension) {
+ 49.                     auto points = new double*[numPointsPerDimension];
+ 50.                 
+ 51.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
+ 52.     0                   points[i] = nullptr;
+ 53.     0--------->     }
+ 54.                 
+ 55.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
+ 56. +   0                   points[i] = allocateCurrentPointRow(numPointsPerDimension);
+ 57.     0           
+ 58.     0                   if (points[i] == nullptr) {
+ 59. +   0                       freePoints(points, numPointsPerDimension);
+ 60.     0                       return nullptr;
+ 61.     0                   }
+ 62.     0--------->     }
+ 63.                 
+ 64.                     return points;
+ 65.                 }
+ 66.                 
+ 67.                 static void initializePoints(double **points, int numPointsPerDimension) {
+ 68.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
+ 69.     0 1-------<         for (int j = 0; j < numPointsPerDimension; ++j) {
+ 70.     0 1                     points[i][j] = Utils::getInitialValue(i, j, numPointsPerDimension);
+ 71.     0 1------->         }
+ 72.     0--------->     }
+ 73.                 }
+ 74.                 
+ 75.                 static void printPoints(double **points, int numPointsPerDimension) {
+ 76.     0---------<     for (int i = 0; i < numPointsPerDimension; ++i) {
+ 77. +   0                   std::cout << std::fixed << std::setprecision(10) << points[i][0];
+ 78.     0           
+ 79.     0 1-------<         for (int j = 1; j < numPointsPerDimension; ++j) {
+ 80. +   0 1                     std::cout << " " << std::fixed << std::setprecision(10) << points[i][j];
+ 81.     0 1------->         }
+ 82.     0           
+ 83.     0                   std::cout << std::endl;
+ 84.     0--------->     }
+ 85.                 }
+ 86.                 
+ 87.                 static InputOptions parseInput(int argc, char * argv[]) {
+ 88.                     int numPointsPerDimension = 0;
+ 89.                     bool verbose = false;
+ 90.                     int errorCode = 0;
+ 91.                 
+ 92.                     if (argc < 2) {
+ 93.                         std::cerr << "ERROR: Too few arguments!" << std::endl;
+ 94. +                       printUsage(argv[0]);
+ 95.                         errorCode = 1;
+ 96.                     } else if (argc > 3) {
+ 97.                         std::cerr << "ERROR: Too many arguments!" << std::endl;
+ 98. +                       printUsage(argv[0]);
+ 99.                         errorCode = 2;
+100.                     } else {
+101.                         int argIdx = 1;
+102.                 
+103.                         if (argc == 3) {
+104.                             if (strncmp(argv[argIdx], OPTION_VERBOSE, strlen(OPTION_VERBOSE)) != 0) {
+105.                                 std::cerr << "ERROR: Unexpected option '" << argv[argIdx] << "'!" << std::endl;
+106. +                               printUsage(argv[0]);
+107.                                 errorCode = 3;
+108.                             }
+109.                 
+110.                             verbose = true;
+111.                             ++argIdx;
+112.                         }
 113.                 
-114.                         if (numPointsPerDimension < 2) {
-115.                             fprintf(stderr, "ERROR: The number of points, '%s', should be "
-116.                                             "a numeric value greater than or equal to 2!\n", argv[argIdx]);
-117. +                           printUsage(argv[0]);
-118.                             errorCode = 4;
-119.                         }
-120.                     }
-121.                 
-122. +                   return {numPointsPerDimension, verbose, errorCode};
-123.                 }
-124.                 
-125.                 std::tuple<int, double> performAlgorithm(double** points, double omega, double epsilon, int numPointsPerDimension) {
-126.                     double maxDiff;
-127.                     int numIterations = 0;
-128.                 
-129.     0---------<     do {
-130.     0                   maxDiff = 0.0;
-131.     0           
-132.     0 1-------<         for (int color = 0; color < 2; ++color) {
-133.     0 1 2-----<             for (int i = 1; i < numPointsPerDimension - 1; ++i) {
-134.     0 1 2 3---<                 for (int j = 1 + (i % 2 == color ? 1 : 0); j < numPointsPerDimension - 1; j += 2) {
-135.     0 1 2 3                         double tmp = (points[i - 1][j] + points[i + 1][j] + points[i][j - 1] + points[i][j + 1]) / 4.0;
-136.     0 1 2 3                         double diff = points[i][j];
-137.     0 1 2 3     
-138.     0 1 2 3                         points[i][j] = (1.0 - omega) * points[i][j] + omega * tmp;
-139.     0 1 2 3                         diff = fabs(diff - points[i][j]);
-140.     0 1 2 3     
-141.     0 1 2 3                         if (diff > maxDiff) {
-142.     0 1 2 3                             maxDiff = diff;
-143.     0 1 2 3                         }
-144.     0 1 2 3--->                 }
-145.     0 1 2----->             }
-146.     0 1------->         }
-147.     0                   ++numIterations;
-148.     0               }
-149.     0--------->     while (maxDiff > epsilon);
-150.                 
-151. +                   return std::make_tuple(numIterations, maxDiff);
-152.                 }
-153.                 
-154.                 
-155.                 int main(int argc, char * argv[]) {
-156.                     struct timeval startTime {};
-157.                     struct timeval endTime {};
-158.                 
-159. +                   auto inputOptions = parseInput(argc, argv);
+114.                         numPointsPerDimension = std::strtol(argv[argIdx], nullptr, 10);
+115.                 
+116.                         if (numPointsPerDimension < 2) {
+117.                             fprintf(stderr, "ERROR: The number of points, '%s', should be "
+118.                                             "a numeric value greater than or equal to 2!\n", argv[argIdx]);
+119. +                           printUsage(argv[0]);
+120.                             errorCode = 4;
+121.                         }
+122.                     }
+123.                 
+124. +                   return {numPointsPerDimension, verbose, errorCode};
+125.                 }
+126.                 
+127.                 std::tuple<int, double> performAlgorithm(double** points, double omega, double epsilon, int numPointsPerDimension) {
+128.                     double maxDiff;
+129.                     int numIterations = 0;
+130.                 
+131.     0---------<     do {
+132.     0                   maxDiff = 0.0;
+133.     0           
+134.     0 1-------<         for (int color = 0; color < 2; ++color) {
+135.     0 1 2-----<             for (int i = 1; i < numPointsPerDimension - 1; ++i) {
+136.     0 1 2 3---<                 for (int j = 1 + (i % 2 == color ? 1 : 0); j < numPointsPerDimension - 1; j += 2) {
+137.     0 1 2 3                         double tmp = (points[i - 1][j] + points[i + 1][j] + points[i][j - 1] + points[i][j + 1]) / 4.0;
+138.     0 1 2 3                         double diff = points[i][j];
+139.     0 1 2 3     
+140.     0 1 2 3                         points[i][j] = (1.0 - omega) * points[i][j] + omega * tmp;
+141.     0 1 2 3                         diff = fabs(diff - points[i][j]);
+142.     0 1 2 3     
+143.     0 1 2 3                         if (diff > maxDiff) {
+144.     0 1 2 3                             maxDiff = diff;
+145.     0 1 2 3                         }
+146.     0 1 2 3--->                 }
+147.     0 1 2----->             }
+148.     0 1------->         }
+149.     0                   ++numIterations;
+150.     0               }
+151.     0--------->     while (maxDiff > epsilon);
+152.                 
+153. +                   return std::make_tuple(numIterations, maxDiff);
+154.                 }
+155.                 
+156.                 
+157.                 int main(int argc, char * argv[]) {
+158.                     struct timeval startTime {};
+159.                     struct timeval endTime {};
 160.                 
-161.                     if (inputOptions.getErrorCode() != 0) {
-162.                         return inputOptions.getErrorCode();
-163.                     }
-164.                 
-165.                     auto numPointsPerDimension = inputOptions.getNumPointsPerDimension();
-166.                     auto isVerbose = inputOptions.isVerbose();
-167.                 
-168.                     double omega = Utils::getRelaxationFactor(numPointsPerDimension);
-169.                     double epsilon = Utils::getToleranceValue(numPointsPerDimension);
-170. +                   auto pointsPointer = allocatePoints(numPointsPerDimension);
-171.                 
-172.                     if (pointsPointer == nullptr) {
-173. +                       freePoints(pointsPointer, numPointsPerDimension);
-174.                         std::cerr << "ERROR: Memory allocation failed!" << std::endl;
-175.                         return 5;
-176.                     }
-177.                 
-178. +                   initializePoints(pointsPointer, numPointsPerDimension);
+161. +                   auto inputOptions = parseInput(argc, argv);
+162.                 
+163.                     if (inputOptions.getErrorCode() != 0) {
+164.                         return inputOptions.getErrorCode();
+165.                     }
+166.                 
+167.                     auto numPointsPerDimension = inputOptions.getNumPointsPerDimension();
+168.                     auto isVerbose = inputOptions.isVerbose();
+169.                 
+170.                     double omega = Utils::getRelaxationFactor(numPointsPerDimension);
+171.                     double epsilon = Utils::getToleranceValue(numPointsPerDimension);
+172. +                   auto pointsPointer = allocatePoints(numPointsPerDimension);
+173.                 
+174.                     if (pointsPointer == nullptr) {
+175. +                       freePoints(pointsPointer, numPointsPerDimension);
+176.                         std::cerr << "ERROR: Memory allocation failed!" << std::endl;
+177.                         return 5;
+178.                     }
 179.                 
-180.                     if (gettimeofday(&startTime, nullptr)) {
-181. +                       freePoints(pointsPointer, numPointsPerDimension);
-182.                         std::cerr << "ERROR: Gettimeofday failed!" << std::endl;
-183.                         return 6;
-184.                     }
-185.                 
-186.                     /* Start of computations. */
+180. +                   initializePoints(pointsPointer, numPointsPerDimension);
+181.                 
+182.                     if (gettimeofday(&startTime, nullptr)) {
+183. +                       freePoints(pointsPointer, numPointsPerDimension);
+184.                         std::cerr << "ERROR: Gettimeofday failed!" << std::endl;
+185.                         return 6;
+186.                     }
 187.                 
-188. +                   auto result = performAlgorithm(pointsPointer, omega, epsilon, numPointsPerDimension);
+188.                     /* Start of computations. */
 189.                 
-190.                     /* End of computations. */
+190. +                   auto result = performAlgorithm(pointsPointer, omega, epsilon, numPointsPerDimension);
 191.                 
-192.                     if (gettimeofday(&endTime, nullptr)) {
-193. +                       freePoints(pointsPointer, numPointsPerDimension);
-194.                         std::cerr << "ERROR: Gettimeofday failed!" << std::endl;
-195.                         return 7;
-196.                     }
-197.                 
-198.                     double duration =
-199.                             ((double)endTime.tv_sec + ((double)endTime.tv_usec / 1000000.0)) -
-200.                             ((double)startTime.tv_sec + ((double)startTime.tv_usec / 1000000.0));
-201.                 
-202.                     std::cerr << "Statistics: duration(s)="
-203.                             << std::fixed
-204. +                           << std::setprecision(10)
-205.                             << duration << " #iters="
-206. +                           << std::get<0>(result)
-207.                             << " diff="
-208. +                           << std::get<1>(result)
-209.                             << " epsilon="
-210.                             << epsilon
-211.                             << std::endl;
-212.                 
-213.                 
-214.                     if (isVerbose) {
-215. +                       printPoints(pointsPointer, numPointsPerDimension);
-216.                     }
-217.                 
-218. +                   freePoints(pointsPointer, numPointsPerDimension);
-219.                     return 0;
-220.                 }
+192.                     /* End of computations. */
+193.                 
+194.                     if (gettimeofday(&endTime, nullptr)) {
+195. +                       freePoints(pointsPointer, numPointsPerDimension);
+196.                         std::cerr << "ERROR: Gettimeofday failed!" << std::endl;
+197.                         return 7;
+198.                     }
+199.                 
+200.                     double duration =
+201.                             ((double)endTime.tv_sec + ((double)endTime.tv_usec / 1000000.0)) -
+202.                             ((double)startTime.tv_sec + ((double)startTime.tv_usec / 1000000.0));
+203.                 
+204.                     std::cerr << "Statistics: duration(s)="
+205.                             << std::fixed
+206. +                           << std::setprecision(10)
+207.                             << duration << " #iters="
+208. +                           << std::get<0>(result)
+209.                             << " diff="
+210. +                           << std::get<1>(result)
+211.                             << " epsilon="
+212.                             << epsilon
+213.                             << std::endl;
+214.                 
+215.                 
+216.                     if (isVerbose) {
+217. +                       printPoints(pointsPointer, numPointsPerDimension);
+218.                     }
+219.                 
+220. +                   freePoints(pointsPointer, numPointsPerDimension);
+221.                     return 0;
+222.                 }
 
 ----------
 
- 39. _ZL12freePointRowPKd not inlined into _ZL10freePointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
+ 40. _ZL12freePointRowPKd not inlined into _ZL10freePointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
 
- 54. _ZL23allocateCurrentPointRowi not inlined into _ZL14allocatePointsi because it should never be inlined (cost=never): no alwaysinline attribute
+ 56. _ZL23allocateCurrentPointRowi not inlined into _ZL14allocatePointsi because it should never be inlined (cost=never): no alwaysinline attribute
 
- 57. _ZL10freePointsPPdi not inlined into _ZL14allocatePointsi because it should never be inlined (cost=never): no alwaysinline attribute
+ 59. _ZL10freePointsPPdi not inlined into _ZL14allocatePointsi because it should never be inlined (cost=never): no alwaysinline attribute
 
- 75. _ZSt12setprecisioni not inlined into _ZL11printPointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
+ 77. _ZSt12setprecisioni not inlined into _ZL11printPointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
 
- 78. _ZSt12setprecisioni not inlined into _ZL11printPointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
+ 80. _ZSt12setprecisioni not inlined into _ZL11printPointsPPdi because it should never be inlined (cost=never): no alwaysinline attribute
 
- 92. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
+ 94. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
 
- 96. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
+ 98. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
 
-104. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
+106. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
 
-117. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
+119. _ZL10printUsagePKc not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
 
-122. _ZN12InputOptionsC2Eibi not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
+124. _ZN12InputOptionsC2Eibi not inlined into _ZL10parseInputiPPc because it should never be inlined (cost=never): no alwaysinline attribute
 
-151. _ZSt10make_tupleIJRiRdEESt5tupleIJDpNSt17__decay_and_stripIT_E6__typeEEEDpOS4_ not inlined into _Z16performAlgorithmPPdddi because it should never be inlined (cost=never): no alwaysinline attribute
+153. _ZSt10make_tupleIJRiRdEESt5tupleIJDpNSt17__decay_and_stripIT_E6__typeEEEDpOS4_ not inlined into _Z16performAlgorithmPPdddi because it should never be inlined (cost=never): no alwaysinline attribute
 
-159. _ZL10parseInputiPPc not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+161. _ZL10parseInputiPPc not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-170. _ZL14allocatePointsi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+172. _ZL14allocatePointsi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-173. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+175. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-178. _ZL16initializePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+180. _ZL16initializePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-181. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+183. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-188. _Z16performAlgorithmPPdddi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+190. _Z16performAlgorithmPPdddi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-193. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+195. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-204. _ZSt12setprecisioni not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+206. _ZSt12setprecisioni not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-206. _ZSt3getILm0EJidEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS4_ not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+208. _ZSt3getILm0EJidEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS4_ not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-208. _ZSt3getILm1EJidEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS4_ not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+210. _ZSt3getILm1EJidEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS4_ not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-215. _ZL11printPointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+217. _ZL11printPointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
 
-218. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute
+220. _ZL10freePointsPPdi not inlined into main because it should never be inlined (cost=never): no alwaysinline attribute

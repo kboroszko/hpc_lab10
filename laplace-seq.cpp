@@ -23,7 +23,7 @@ static void printUsage(char const* progName) {
                     "   " << OPTION_VERBOSE << "   Prints the input and output systems." << std::endl;
 }
 
-static void freePointRow(const double* currentPointRow) {
+inline static void freePointRow(const double* currentPointRow) {
     if (currentPointRow != nullptr) {
         delete(currentPointRow);
     }
